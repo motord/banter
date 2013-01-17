@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 __author__ = 'peter'
 
-from flask import Blueprint, request, Response
-from decorators import signature_verified
+from flask import Blueprint, request, Response, render_template
+from decorators import signature_verified, channel_required, bot_required
 from models import Channel, Conversation, Bot
 import choir
 import intepreter
@@ -30,3 +30,37 @@ def listen(channel):
 @qq.route('/weixin/populate', methods=['GET'])
 def populate():
     return 'populated.'
+
+@qq.route('/create/<string:channel>')
+@channel_required
+def create_channel(channel):
+    pass
+
+@qq.route('/edit/<string:channel>/', methods=['GET', 'POST'])
+@channel_required
+def edit_channel(channel):
+    return render_template('channel.html', channel=channel)
+
+@qq.route('/delete/<string:channel>/', methods=['GET', 'POST'])
+@channel_required
+def delete_channel(channel):
+    return render_template('channel.html', channel=channel)
+
+@qq.route('/create/<string:channel>/<string:bot>', methods=['GET', 'POST'])
+@channel_required
+@bot_required
+def create_bot(channel, bot):
+    return render_template('bot.html', channel=channel, bot=bot)
+
+@qq.route('/edit/<string:channel>/<string:bot>', methods=['GET', 'POST'])
+@channel_required
+@bot_required
+def edit_bot(channel, bot):
+    return render_template('bot.html', channel=channel, bot=bot)
+
+@qq.route('/delete/<string:channel>/<string:bot>', methods=['GET', 'POST'])
+@channel_required
+@bot_required
+def delete_bot(channel, bot):
+    return render_template('bot.html', channel=channel, bot=bot)
+

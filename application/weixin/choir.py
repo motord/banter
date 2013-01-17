@@ -1,6 +1,6 @@
 __author__ = 'peter'
 
-from flask import current_app
+from flask import render_template
 from application import settings
 import logging
 from intepreter import MSG_TYPE_IMAGE, MSG_TYPE_LOCATION, MSG_TYPE_TEXT
@@ -14,8 +14,7 @@ def chant(remark):
         retort['content'] = '/'.join(remark['content'])
         retort['msgType']=MSG_TYPE_TEXT
         retort['funcFlag']=0
-        t = current_app.jinja_env.get_template('message.xml')
-        retort = t.render(message=retort)
+        retort=render_template('message.xml', message=retort)
         logging.info(retort)
         if settings.DEBUG_MODE:
             logging.info('Replied to %s with "%s"', remark['fromUser'], remark)

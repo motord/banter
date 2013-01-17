@@ -13,6 +13,7 @@ class Channel(db.Model):
     modified = db.DateTimeProperty(auto_now=True)
 
 class Bot(db.Model):
+    name = db.StringProperty(required=True)
     code = db.StringProperty(required=True)
     channel = db.ReferenceProperty(Channel)
     published = db.BooleanProperty(required=True, default=False)
