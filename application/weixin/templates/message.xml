@@ -1,0 +1,21 @@
+<xml>
+    <ToUserName><![CDATA[{{ message.toUser}}]]></ToUserName>
+    <FromUserName><![CDATA[{{ message.fromUser }}]]></FromUserName>
+    <CreateTime>{{ message.createTime }}</CreateTime>
+    <MsgType><![CDATA[{{ message.msgType }}]]></MsgType>
+    <Content><![CDATA[{{ message.content }}]]></Content>
+    {% if message.articles %}
+        <ArticleCount>{{ message.articleCount }}</ArticleCount>
+        <Articles>
+            {% for article in message.articles %}
+            <item>
+                <Title><![CDATA[{{ article.title }}]]></Title>
+                <Description><![CDATA[{{ article.description }}]]></Description>
+                <PicUrl><![CDATA[{{ article.picUrl }}]]></PicUrl>
+                <Url><![CDATA[{{ article.url }}]]></Url>
+            </item>
+            {% endfor %}
+        </Articles>
+    {% endif %}
+    <FuncFlag>{{ message.funcFlag }}</FuncFlag>
+</xml>
