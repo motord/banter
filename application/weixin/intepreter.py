@@ -1,12 +1,7 @@
 __author__ = 'peter'
 
-from finalseg import cut
 from application import scrapemark
 import re
-
-MSG_TYPE_TEXT = u'text'
-MSG_TYPE_LOCATION = u'location'
-MSG_TYPE_IMAGE = u'image'
 
 def cdatarepl(matchobj):
     return matchobj.group(1)
@@ -34,8 +29,3 @@ def parse(message):
     msg=dict([(k,v) for (k,v) in pattern.scrape(html=re.sub('<(\!\[CDATA\[.*\]\])>', cdatarepl, message))['message'].items() if v])
     return msg
 
-def process(message):
-    message=parse(message)
-    if message['content']:
-        message['content']=cut(message['content'], find_new_word=True)
-    return message

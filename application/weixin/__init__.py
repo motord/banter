@@ -13,7 +13,7 @@ qq = Blueprint('qq', __name__, template_folder='templates')
 @qq.route('/<string:channel>/weixin', methods=['GET', 'POST'])
 @signature_verified
 def listen(channel):
-    remark = intepreter.process(request.data)
+    remark = intepreter.parse(request.data)
     q=Conversation.gql("WHERE channel = :1 AND user = :2", channel, remark['fromUser'])
     c=q.get()
     if c:
