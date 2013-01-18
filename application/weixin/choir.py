@@ -50,14 +50,14 @@ def UnloadBot(channel, bot):
 
 def ReloadAllBots(channel, bot):
     # Get the list of modules from the database and load them all
-    q=Bot.gql("WHERE channel = :1", channel.key())
+    q=Bot.gql("WHERE channel = :1 AND published = True", channel.key())
     for bot in q:
         ReloadBot(channel, bot)
 
 def chant(remark):
     retort={'toUser':remark['fromUser'], 'fromUser':remark['toUser'], 'createTime':int(time.time())}
     channel=remark['channel']
-    for bot in channel.bots:
+    for bot in channel.bots.filter("published = True"):
         module=LoadBot(channel, bot)
         retort = {MSG_TYPE_TEXT: module.process_text,
                   MSG_TYPE_IMAGE: module.process_image,

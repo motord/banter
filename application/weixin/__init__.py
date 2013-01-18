@@ -46,7 +46,7 @@ MSG_TYPE_IMAGE = u'image'
 
 def process_text(remark, retort):
     if remark['content']:
-        retort['content']=remark['content']
+        retort['content']='Bot Spawned!'
     retort['msgType']=MSG_TYPE_TEXT
     retort['funcFlag']=0
     return retort
@@ -65,13 +65,13 @@ def process_image(remark, retort):
 @qq.route('/create/<string:channel>')
 @channel_required
 def create_channel(channel):
-    pass
+    return render_template('new_channel.html', channel=channel)
 
 @admin_required
 @qq.route('/edit/<string:channel>/', methods=['GET', 'POST'])
 @channel_required
 def edit_channel(channel):
-    return render_template('channel.html', channel=channel)
+    return render_template('edit_channel.html', channel=channel)
 
 @admin_required
 @qq.route('/delete/<string:channel>/', methods=['GET', 'POST'])
@@ -84,14 +84,15 @@ def delete_channel(channel):
 @channel_required
 @bot_required
 def create_bot(channel, bot):
-    return render_template('bot.html', channel=channel, bot=bot)
+    return render_template('new_bot.html', channel=channel, bot=bot)
 
 @admin_required
 @qq.route('/edit/<string:channel>/<string:bot>', methods=['GET', 'POST'])
-@channel_required
-@bot_required
+#@channel_required
+#@bot_required
 def edit_bot(channel, bot):
-    return render_template('bot.html', channel=channel, bot=bot)
+#    return render_template('edit_bot.html', channel=channel, bot=bot)
+    return render_template('edit_bot.html')
 
 @admin_required
 @qq.route('/delete/<string:channel>/<string:bot>', methods=['GET', 'POST'])
