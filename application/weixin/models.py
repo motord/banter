@@ -14,14 +14,14 @@ class Channel(db.Model):
 
 class Bot(db.Model):
     name = db.StringProperty(required=True)
-    code = db.StringProperty(required=True)
-    channel = db.ReferenceProperty(Channel)
+    code = db.TextProperty(required=True)
+    channel = db.ReferenceProperty(Channel, collection_name='bots')
     published = db.BooleanProperty(required=True, default=False)
     created = db.DateTimeProperty(auto_now_add=True)
     modified = db.DateTimeProperty(auto_now=True)
 
 class Conversation(db.Model):
-    channel = db.ReferenceProperty(Channel)
+    channel = db.ReferenceProperty(Channel, collection_name='conversations')
     user = db.StringProperty(required=True)
     messages=db.ListProperty(unicode)
     created = db.DateTimeProperty(auto_now_add=True)
