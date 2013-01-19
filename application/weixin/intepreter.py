@@ -27,5 +27,6 @@ def parse(message):
      </xml>
     """)
     msg=dict([(k,v) for (k,v) in pattern.scrape(html=re.sub('<(\!\[CDATA\[.*\]\])>', cdatarepl, message))['message'].items() if v])
+    msg['message']=message
     return msg
 

@@ -1,7 +1,7 @@
 __author__ = 'peter'
 
 from flask import request, redirect
-from models import Channel, Conversation, Bot
+from models import Channel, Message, Bot
 from hashlib import sha1
 from functools import wraps
 

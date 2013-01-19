@@ -3,7 +3,7 @@ __author__ = 'peter'
 
 from flask import Blueprint, request, Response, render_template
 from decorators import signature_verified, channel_required, bot_required
-from models import Channel, Conversation, Bot
+from models import Channel, Message, Bot
 import choir
 import intepreter
 import logging
@@ -15,17 +15,16 @@ qq = Blueprint('qq', __name__, template_folder='templates')
 @signature_verified
 def listen(channel):
     remark = intepreter.parse(request.data)
-    q=Conversation.gql("WHERE channel = :1 AND user = :2", channel, remark['fromUser'])
-    conversation=q.get()
-    if conversation:
-        conversation.messages.append(request.data.decode('utf-8'))
-    else:
-        conversation=Conversation(channel=channel, user=remark['fromUser'], messages=[request.data.decode('utf-8')])
-    conversation.put()
+    message=Message(channel=channel, from_user=remark['fromUser'],
+        to_user=remark['toUser'], create_time=remark['createTime'],
+        message_type=remark['msgType'], message=remark['message'])
+    message.put()
     remark['channel']=channel
     retort=choir.chant(remark)
-    conversation.messages.append(retort)
-    conversation.put()
+    message=Message(channel=channel, from_user=retort['fromUser'],
+        to_user=retort['toUser'], create_time=retort['createTime'],
+        message_type=retort['msgType'], message=retort['message'])
+    message.put()
     return Response(retort, content_type='application/xml;charset=utf-8')
 
 

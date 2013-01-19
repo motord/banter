@@ -50,18 +50,18 @@ def UnloadBot(channel, bot):
 
 def ReloadAllBots(channel, bot):
     # Get the list of modules from the database and load them all
-    q=Bot.gql("WHERE channel = :1 AND published = True", channel.key())
+    q=Bot.gql("WHERE channel = :1 AND activated = True", channel.key())
     for bot in q:
         ReloadBot(channel, bot)
 
 def chant(remark):
     retort={'toUser':remark['fromUser'], 'fromUser':remark['toUser'], 'createTime':int(time.time())}
     channel=remark['channel']
-    for bot in channel.bots.filter("published = True"):
+    for bot in channel.bots.filter("activated = True"):
         module=LoadBot(channel, bot)
         retort = {MSG_TYPE_TEXT: module.process_text,
                   MSG_TYPE_IMAGE: module.process_image,
                   MSG_TYPE_LOCATION: module.process_location}[remark['msgType']](remark, retort)
-    retort=render_template('message.xml', message=retort)
-    logging.info(retort)
+    retort['message']=render_template('message.xml', message=retort)
+    logging.info(retort['message'])
     return retort
