@@ -28,5 +28,6 @@ def parse(message):
     """)
     msg=dict([(k,v) for (k,v) in pattern.scrape(html=re.sub('<(\!\[CDATA\[.*\]\])>', cdatarepl, message))['message'].items() if v])
     msg['message']=message
+    msg['createTime']=int(msg['createTime'])
     return msg
 

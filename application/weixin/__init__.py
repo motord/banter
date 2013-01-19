@@ -15,17 +15,17 @@ qq = Blueprint('qq', __name__, template_folder='templates')
 @signature_verified
 def listen(channel):
     remark = intepreter.parse(request.data)
-    message=Message(channel=channel, from_user=remark['fromUser'],
+    message=Message(channel=channel.key, from_user=remark['fromUser'],
         to_user=remark['toUser'], create_time=remark['createTime'],
         message_type=remark['msgType'], message=remark['message'])
     message.put()
     remark['channel']=channel
     retort=choir.chant(remark)
-    message=Message(channel=channel, from_user=retort['fromUser'],
+    message=Message(channel=channel.key, from_user=retort['fromUser'],
         to_user=retort['toUser'], create_time=retort['createTime'],
         message_type=retort['msgType'], message=retort['message'])
     message.put()
-    return Response(retort, content_type='application/xml;charset=utf-8')
+    return Response(retort['message'], content_type='application/xml;charset=utf-8')
 
 
 @admin_required
@@ -46,8 +46,8 @@ MSG_TYPE_IMAGE = u'image'
 def process_text(remark, retort):
     if remark['content']:
         retort['content']='Bot Spawned!'
-    retort['msgType']=MSG_TYPE_TEXT
-    retort['funcFlag']=0
+        retort['msgType']=MSG_TYPE_TEXT
+        retort['funcFlag']=0
     return retort
 
 def process_location(remark, retort):
@@ -56,7 +56,7 @@ def process_location(remark, retort):
 def process_image(remark, retort):
     return retort
     """
-    bot=Bot(name=u'v2ex', code=code, channel=channel)
+    bot=Bot(name=u'v2ex', code=code, channel=channel.key)
     bot.put()
     return 'populated.'
 

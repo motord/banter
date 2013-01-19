@@ -16,7 +16,7 @@ class Bot(ndb.Model):
     name = ndb.StringProperty(required=True)
     code = ndb.TextProperty(required=True)
     channel = ndb.KeyProperty(Channel)
-    activated = ndb.BooleanProperty(required=True, default=False)
+    activated = ndb.BooleanProperty(default=False)
     created = ndb.DateTimeProperty(auto_now_add=True)
     modified = ndb.DateTimeProperty(auto_now=True)
 
