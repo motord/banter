@@ -57,7 +57,8 @@ def ReloadAllBots(channel, bot):
 def chant(remark):
     retort={'toUser':remark['fromUser'], 'fromUser':remark['toUser'], 'createTime':int(time.time())}
     channel=remark['channel']
-    for bot in channel.bots.filter("activated = True"):
+    q=Bot.gql("WHERE channel = :1 AND activated = True", channel.key())
+    for bot in q:
         module=LoadBot(channel, bot)
         retort = {MSG_TYPE_TEXT: module.process_text,
                   MSG_TYPE_IMAGE: module.process_image,

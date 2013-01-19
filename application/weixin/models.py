@@ -15,13 +15,13 @@ class Channel(ndb.Model):
 class Bot(ndb.Model):
     name = ndb.StringProperty(required=True)
     code = ndb.TextProperty(required=True)
-    channel = ndb.ReferenceProperty(Channel, collection_name='bots')
+    channel = ndb.KeyProperty(Channel)
     activated = ndb.BooleanProperty(required=True, default=False)
     created = ndb.DateTimeProperty(auto_now_add=True)
     modified = ndb.DateTimeProperty(auto_now=True)
 
 class Message(ndb.Model):
-    channel = ndb.ReferenceProperty(Channel, collection_name='messages')
+    channel = ndb.KeyProperty(Channel)
     from_user = ndb.StringProperty(required=True)
     to_user = ndb.StringProperty(required=True)
     create_time = ndb.IntegerProperty(required=True)
