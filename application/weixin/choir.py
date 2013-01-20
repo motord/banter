@@ -7,6 +7,7 @@ import bot
 from models import  Bot
 import sys
 from google.appengine.ext import db
+from decorators import cached, invalidate_cache
 
 MSG_TYPE_TEXT = u'text'
 MSG_TYPE_LOCATION = u'location'
@@ -32,28 +33,33 @@ def import_module(channel, bot):
             del sys.modules[bot.name]
         return module
 
+@invalidate_cache
 def LoadBot(channel, bot):
     # Call the import function
     bot=import_module(channel, bot)
     return bot
 
+@invalidate_cache
 def ReloadBot(channel, bot):
     UnloadBot(bot)
     bot=LoadBot(bot)
     logging.info('Reload Bot ({0})'.format(bot.name))
     return bot
 
+@invalidate_cache
 def UnloadBot(channel, bot):
     if sys.modules.has_key(bot):
         logging.info('Remove Bot ({0})'.format(bot.name))
     del sys.modules[bot]
 
+@invalidate_cache
 def ReloadAllBots(channel, bot):
     # Get the list of modules from the database and load them all
     q=Bot.gql("WHERE channel = :1 AND activated = True", channel.key)
     for bot in q:
         ReloadBot(channel, bot)
 
+@cached()
 def chant(remark):
     retort={'toUser':remark['fromUser'], 'fromUser':remark['toUser'], 'createTime':int(time.time())}
     channel=remark['channel']

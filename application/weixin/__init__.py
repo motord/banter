@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 __author__ = 'peter'
 
-from flask import Blueprint, request, Response, render_template
+from flask import Blueprint, request, Response, render_template, flash, redirect, url_for
 from decorators import signature_verified, channel_required, bot_required
 from models import Channel, Message, Bot
 import choir
 import intepreter
 import logging
 from application.decorators import admin_required
+from forms import ChannelForm
+from google.appengine.runtime.apiproxy_errors import CapabilityDisabledError
 
 qq = Blueprint('qq', __name__, template_folder='templates')
 
@@ -56,7 +58,7 @@ def process_location(remark, retort):
 def process_image(remark, retort):
     return retort
     """
-    bot=Bot(name=u'v2ex', code=code, channel=channel.key)
+    bot=Bot(name=u'spawn', code=code, channel=channel.key)
     bot.put()
     return 'populated.'
 
@@ -100,3 +102,41 @@ def edit_bot(channel, bot):
 def delete_bot(channel, bot):
     return render_template('bot.html', channel=channel, bot=bot)
 
+@qq.route('/channels', methods=['GET', 'POST'])
+def list_channels():
+    """List all channels"""
+    channels = Channel.query()
+    form = ChannelForm()
+    if form.validate_on_submit():
+        channel = Channel(
+            id = form.id.data,
+            name = form.name.data,
+            token = form.token.data,
+        )
+        try:
+            channel.put()
+            flash(u'Channel %s successfully saved.' % channel.id, 'success')
+            return redirect(url_for('list_channels'))
+        except CapabilityDisabledError:
+            flash(u'App Engine Datastore is currently in read-only mode.', 'info')
+            return redirect(url_for('list_channels'))
+    return render_template('list_channels.html', channels=channels, form=form)
+
+def list_bots():
+    """List all channels"""
+    channels = Channel.query()
+    form = ChannelForm()
+    if form.validate_on_submit():
+        channel = Channel(
+            id = form.id.data,
+            name = form.name.data,
+            token = form.token.data,
+        )
+        try:
+            channel.put()
+            flash(u'Channel %s successfully saved.' % channel.id, 'success')
+            return redirect(url_for('list_channels'))
+        except CapabilityDisabledError:
+            flash(u'App Engine Datastore is currently in read-only mode.', 'info')
+            return redirect(url_for('list_channels'))
+    return render_template('list_channels.html', channels=channels, form=form)
