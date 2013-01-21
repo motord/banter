@@ -89,11 +89,10 @@ def create_bot(channel, bot):
 
 @admin_required
 @qq.route('/edit/<string:channel>/<string:bot>', methods=['GET', 'POST'])
-#@channel_required
-#@bot_required
+@channel_required
+@bot_required
 def edit_bot(channel, bot):
-#    return render_template('edit_bot.html', channel=channel, bot=bot)
-    return render_template('edit_bot.html')
+    return render_template('edit_bot.html', channel=channel, bot=bot)
 
 @admin_required
 @qq.route('/delete/<string:channel>/<string:bot>', methods=['GET', 'POST'])
@@ -122,21 +121,9 @@ def list_channels():
             return redirect(url_for('list_channels'))
     return render_template('list_channels.html', channels=channels, form=form)
 
-def list_bots():
-    """List all channels"""
-    channels = Channel.query()
-    form = ChannelForm()
-    if form.validate_on_submit():
-        channel = Channel(
-            id = form.id.data,
-            name = form.name.data,
-            token = form.token.data,
-        )
-        try:
-            channel.put()
-            flash(u'Channel %s successfully saved.' % channel.id, 'success')
-            return redirect(url_for('list_channels'))
-        except CapabilityDisabledError:
-            flash(u'App Engine Datastore is currently in read-only mode.', 'info')
-            return redirect(url_for('list_channels'))
-    return render_template('list_channels.html', channels=channels, form=form)
+@qq.route('/bots/<string:channel>', methods=['GET'])
+@channel_required
+def list_bots(channel):
+    """List channel bots"""
+    bots = Bot.query(Bot.channel==channel.key)
+    return render_template('list_bots.html', channel=channel, bots = bots)

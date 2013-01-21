@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block style_block %}
+    <style type="text/css">
+        table.table { width: 60%; }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+
+    <h1 id="">Channel Bots</h1>
+    <div>&nbsp;</div>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Activated</th>
+                <th>Modified on</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bot in bots %}
+            <tr>
+                <td><a href="{{ url_for('qq.edit_bot', channel=channel.id, bot=bot.name) }}">{{ bot.name }}</a></td>
+                <td>{{ bot.activated }}</td>
+                <td class="nowrap">{{ bot.modified.strftime('%b %d, %Y %I:%M %p') }}</td>
+                <td>
+                    <a href="{{ url_for('qq.edit_bot', channel=channel.id, bot=bot.name) }}" class="btn">Edit</a>
+                </td>
+                <td>
+                    <form method="post" action="{{ url_for('qq.delete_bot', channel=channel.id, bot=bot.name) }}">
+                        <button class="btn">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7">No bots yet</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p>
+        <a class="btn btn-primary" data-toggle="modal" data-target="#new-bot-modal">
+            <i class="icon-plus-sign icon-white"></i>
+            New bot
+        </a>
+    </p>
+
+
+{% endblock content %}

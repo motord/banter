@@ -1,6 +1,6 @@
 __author__ = 'peter'
 
-from flask import request, redirect, render_template
+from flask import request, redirect, render_template, url_for
 from models import Channel, Message, Bot
 from hashlib import sha1
 from functools import wraps
@@ -35,24 +35,23 @@ def channel_required(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
         channel=kwargs['channel']
-        q=Channel.gql("WHERE id = :1", channel)
-        c=q.get()
-        if q:
-            kwargs['channel']=c
+        channel=Channel.gql("WHERE id = :1", channel).get()
+        if channel:
+            kwargs['channel']=channel
             return func(*args, **kwargs)
-        return func(*args, **kwargs)
+        return redirect(url_for('qq.list_channels'))
     return decorated_view
 
 def bot_required(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
+        channel=kwargs['channel']
         bot=kwargs['bot']
-        q=Bot.gql("WHERE name = :1", bot)
-        b=q.get()
-        if q:
-            kwargs['bot']=b
+        bot=Bot.gql("WHERE name = :1", bot).get()
+        if bot:
+            kwargs['bot']=bot
             return func(*args, **kwargs)
-        return func(*args, **kwargs)
+        return redirect(url_for('qq.list_bots', channel=channel.id))
     return decorated_view
 
 def cache_key(remark):
@@ -73,7 +72,6 @@ def cached(timeout=300):
         def decorated_function(*args, **kwargs):
             remark=args[0]
             key = cache_key(remark)
-            logging.info(key)
             retort = memcache.get(key)
             if retort:
                 logging.info('cache hit: {0}'.format(key))
