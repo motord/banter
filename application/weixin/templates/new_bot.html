@@ -19,15 +19,30 @@
     .navbar input {
         margin-top: 5px;
     }
-    .navbar label {
-        margin-bottom: 0px;
-        margin-top: 10px;
-    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div id="editor">{{ bot.code }}</div>
+<div id="editor">
+    import logging
+
+    MSG_TYPE_TEXT = u'text'
+    MSG_TYPE_LOCATION = u'location'
+    MSG_TYPE_IMAGE = u'image'
+
+    def process_text(remark, retort):
+    if remark['content']:
+    retort['content']='Bot Spawned!'
+    retort['msgType']=MSG_TYPE_TEXT
+    retort['funcFlag']=0
+    return retort
+
+    def process_location(remark, retort):
+    return retort
+
+    def process_image(remark, retort):
+    return retort
+</div>
 
 <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>

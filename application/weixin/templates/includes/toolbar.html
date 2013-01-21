@@ -1,0 +1,46 @@
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="/"><img src="/static/img/biscuit.png"/>Banter</a>
+            <div class="nav-collapse">
+                {% if bot %}
+                <form method="post" action="{{ url_for('qq.edit_bot', channel=channel.id, bot=bot.name) }}">
+                {% else %}
+                <form method="post" action="{{ url_for('qq.new_bot', channel=channel.id) }}">
+                {% endif %}
+                    <ul class="nav">
+                        <li>
+                            <a href="{{ url_for('qq.list_bots', channel=channel.id) }}">{{ channel.name }} Channel</a>
+                            <input type="hidden" name="channel_id" value="{{ channel.id }}">
+                        </li>
+                        <li>
+                            {% if bot %}
+                                <label class="span2">{{ bot.name }} Bot</label>
+                                <input type="hidden" name="bot_name" value="{{ bot.name }}">
+                            {% else %}
+                                <input type="text" name="bot_name" class="span2">
+                            {% endif %}
+                        </li>
+                    </ul>
+                    <button class="btn" data-toggle="button">
+                        {% if bot %}
+                            {% if bot.activated %}
+                                Deactivate
+                            {% else %}
+                                Activate
+                            {% endif %}
+                        {% else %}
+                            Activate
+                        {% endif %}
+                    </button>
+                    <button class="btn btn-primary">Save</button>
+                </form>
+            </div><!--/.nav-collapse -->
+        </div><!-- /.navbar .container -->
+    </div><!-- /.navbar-inner -->
+</div><!-- /navbar -->

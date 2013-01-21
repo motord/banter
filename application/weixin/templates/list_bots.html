@@ -3,13 +3,17 @@
 {% block style_block %}
     <style type="text/css">
         table.table { width: 60%; }
+        .navbar .brand {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
 
 
-    <h1 id="">Channel Bots</h1>
+    <h1 id="">{{ channel.name}} Bots</h1>
     <div>&nbsp;</div>
     <table class="table table-bordered table-striped">
         <thead>
@@ -42,7 +46,7 @@
         </tbody>
     </table>
     <p>
-        <a class="btn btn-primary" data-toggle="modal" data-target="#new-bot-modal">
+        <a class="btn btn-primary" href="{{ url_for('qq.new_bot', channel=channel.id) }}">
             <i class="icon-plus-sign icon-white"></i>
             New bot
         </a>
