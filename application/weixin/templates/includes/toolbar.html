@@ -9,35 +9,28 @@
             <a class="brand" href="/"><img src="/static/img/biscuit.png"/>Banter</a>
             <div class="nav-collapse">
                 {% if bot %}
-                <form method="post" action="{{ url_for('qq.edit_bot', channel=channel.id, bot=bot.name) }}">
+                <form id="android" method="post" action="{{ url_for('qq.edit_bot', channel=channel.id, bot=bot.name) }}" accept-charset="utf-8">
                 {% else %}
-                <form method="post" action="{{ url_for('qq.new_bot', channel=channel.id) }}">
+                <form id="android" method="post" action="{{ url_for('qq.create_bot', channel=channel.id) }}" accept-charset="utf-8">
                 {% endif %}
+                    {{ form.hidden_tag() }}
                     <ul class="nav">
                         <li>
                             <a href="{{ url_for('qq.list_bots', channel=channel.id) }}">{{ channel.name }} Channel</a>
-                            <input type="hidden" name="channel_id" value="{{ channel.id }}">
                         </li>
                         <li>
                             {% if bot %}
                                 <label class="span2">{{ bot.name }} Bot</label>
-                                <input type="hidden" name="bot_name" value="{{ bot.name }}">
+                                <input type="hidden" name="name" value="{{ bot.name }}">
                             {% else %}
-                                <input type="text" name="bot_name" class="span2">
+                                <input type="text" name="name" class="span2">
                             {% endif %}
                         </li>
+                        <li>
+                            <div id="flag">Activated {{ form.activated }}</div>
+                        </li>
                     </ul>
-                    <button class="btn" data-toggle="button">
-                        {% if bot %}
-                            {% if bot.activated %}
-                                Deactivate
-                            {% else %}
-                                Activate
-                            {% endif %}
-                        {% else %}
-                            Activate
-                        {% endif %}
-                    </button>
+                    <input id="code" type="hidden" name="code">
                     <button class="btn btn-primary">Save</button>
                 </form>
             </div><!--/.nav-collapse -->

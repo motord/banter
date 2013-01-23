@@ -19,35 +19,32 @@
     .navbar input {
         margin-top: 5px;
     }
+    #flag {
+        margin-top: 8px;
+        margin-left: 16px;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div id="editor">
-    import logging
+import logging
 
-    MSG_TYPE_TEXT = u'text'
-    MSG_TYPE_LOCATION = u'location'
-    MSG_TYPE_IMAGE = u'image'
+MSG_TYPE_TEXT = u'text'
+MSG_TYPE_LOCATION = u'location'
+MSG_TYPE_IMAGE = u'image'
 
-    def process_text(remark, retort):
+def process_text(remark, retort):
     if remark['content']:
-    retort['content']='Bot Spawned!'
+        retort['content']='Bot Spawned!'
     retort['msgType']=MSG_TYPE_TEXT
     retort['funcFlag']=0
     return retort
 
-    def process_location(remark, retort):
+def process_location(remark, retort):
     return retort
 
-    def process_image(remark, retort):
+def process_image(remark, retort):
     return retort
 </div>
-
-<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-<script>
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
-    editor.getSession().setMode("ace/mode/python");
-</script>
 {% endblock content %}

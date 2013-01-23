@@ -16,3 +16,8 @@ class ChannelForm(wtf.Form):
     id = wtf.TextField('Id', validators=[validators.Required()])
     name = wtf.TextField('Name', validators=[validators.Required()])
     token = wtf.TextField('Token', validators=[validators.Required()])
+
+class BotForm(wtf.Form):
+    name = wtf.TextField('Name', validators=[validators.Required()])
+    activated = wtf.BooleanField('Activated')
+    code = wtf.TextAreaField('Code', validators=[validators.Required()])

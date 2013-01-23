@@ -23,16 +23,14 @@
         margin-bottom: 0px;
         margin-top: 10px;
     }
+    #flag {
+        margin-top: 8px;
+        margin-left: 16px;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div id="editor">{{ bot.code }}</div>
 
-<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-<script>
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
-    editor.getSession().setMode("ace/mode/python");
-</script>
 {% endblock content %}

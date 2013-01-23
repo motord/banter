@@ -8,7 +8,7 @@ import choir
 import intepreter
 import logging
 from application.decorators import admin_required
-from forms import ChannelForm
+from forms import ChannelForm, BotForm
 from google.appengine.runtime.apiproxy_errors import CapabilityDisabledError
 
 qq = Blueprint('qq', __name__, template_folder='templates')
@@ -63,12 +63,6 @@ def process_image(remark, retort):
     return 'populated.'
 
 @admin_required
-@qq.route('/create/<string:channel>')
-@channel_required
-def create_channel(channel):
-    return render_template('new_channel.html', channel=channel)
-
-@admin_required
 @qq.route('/edit/<string:channel>/', methods=['GET', 'POST'])
 @channel_required
 def edit_channel(channel):
@@ -87,23 +81,50 @@ def delete_channel(channel):
         return redirect(url_for('qq.list_channels.html'))
 
 @admin_required
-@qq.route('/new/<string:channel>', methods=['GET', 'POST'])
+@qq.route('/create/<string:channel>', methods=['GET', 'POST'])
 @channel_required
-def new_bot(channel):
-    return render_template('new_bot.html', channel=channel)
+def create_bot(channel):
+    form = BotForm()
+    if form.validate_on_submit():
+        bot = Bot(
+            name = form.name.data,
+            activated = form.activated.data,
+            code = form.code.data,
+            channel = channel.key
+        )
+        try:
+            bot.put()
+            flash(u'Bot %s successfully saved.' % bot.name, 'success')
+            return redirect(url_for('qq.edit_bot', channel=channel.id, bot=bot.name))
+        except CapabilityDisabledError:
+            flash(u'App Engine Datastore is currently in read-only mode.', 'info')
+            return redirect(url_for('qq.list_bots', channel=channel.id))
+    return render_template("new_bot.html", channel=channel, form=form)
 
 @admin_required
 @qq.route('/edit/<string:channel>/<string:bot>', methods=['GET', 'POST'])
 @channel_required
 @bot_required
 def edit_bot(channel, bot):
-    return render_template('edit_bot.html', channel=channel, bot=bot)
+    form = BotForm(obj=bot)
+    if form.validate_on_submit():
+        bot.name = form.data.get('name')
+        bot.activated = form.data.get('activated')
+        bot.code=form.data.get('code')
+        choir.UnloadBot(channel, bot)
+        try:
+            bot.put()
+            flash(u'Bot %s successfully saved.' % bot.name, 'success')
+        except CapabilityDisabledError:
+            flash(u'App Engine Datastore is currently in read-only mode.', 'info')
+    return render_template("edit_bot.html", channel=channel, bot=bot, form=form)
 
 @admin_required
 @qq.route('/delete/<string:channel>/<string:bot>', methods=['GET', 'POST'])
 @channel_required
 @bot_required
 def delete_bot(channel, bot):
+    choir.UnloadBot(channel, bot)
     try:
         bot.key.delete()
         flash(u'Bot %s successfully deleted.' % bot.name, 'success')
@@ -126,10 +147,10 @@ def list_channels():
         try:
             channel.put()
             flash(u'Channel %s successfully saved.' % channel.id, 'success')
-            return redirect(url_for('list_channels'))
+            return redirect(url_for('qq.list_channels'))
         except CapabilityDisabledError:
             flash(u'App Engine Datastore is currently in read-only mode.', 'info')
-            return redirect(url_for('list_channels'))
+            return redirect(url_for('qq.list_channels'))
     return render_template('list_channels.html', channels=channels, form=form)
 
 @qq.route('/bots/<string:channel>', methods=['GET'])
