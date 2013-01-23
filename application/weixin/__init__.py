@@ -66,7 +66,18 @@ def process_image(remark, retort):
 @qq.route('/edit/<string:channel>/', methods=['GET', 'POST'])
 @channel_required
 def edit_channel(channel):
-    return render_template('edit_channel.html', channel=channel)
+    form = ChannelForm(obj=channel)
+    if form.validate_on_submit():
+        channel.id=form.data.get('id')
+        channel.name = form.data.get('name')
+        channel.token = form.data.get('token')
+        try:
+            channel.put()
+            flash(u'Channel %s successfully saved.' % channel.name, 'success')
+            return redirect(url_for('qq.list_channels'))
+        except CapabilityDisabledError:
+            flash(u'App Engine Datastore is currently in read-only mode.', 'info')
+    return render_template('edit_channel.html', form=form)
 
 @admin_required
 @qq.route('/delete/<string:channel>/', methods=['GET', 'POST'])
@@ -75,10 +86,9 @@ def delete_channel(channel):
     try:
         channel.key.delete()
         flash(u'Channel %s successfully deleted.' % channel.name, 'success')
-        return redirect(url_for('qq.list_channels'))
     except CapabilityDisabledError:
         flash(u'App Engine Datastore is currently in read-only mode.', 'info')
-        return redirect(url_for('qq.list_channels.html'))
+    return redirect(url_for('qq.list_channels'))
 
 @admin_required
 @qq.route('/create/<string:channel>', methods=['GET', 'POST'])

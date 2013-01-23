@@ -3,17 +3,30 @@
 {% block content %}
     <h3>Edit Channel</h3>
     <form id="edit-channel" class="well form-horizontal"
-          action="{{ url_for('edit_channel', channel_id=channel.key.id()) }}" method="post" accept-charset="utf-8">
+          action="{{ url_for('qq.edit_channel', channel=form.id.data) }}" method="post" accept-charset="utf-8">
         <fieldset>
             {{ form.hidden_tag() }}
             <input type="hidden" name="mode" value="edit" />
             <div class="control-group">
-                <div class="control-label">{{ form.channel_name.label }}</div>
+                <div class="control-label">{{ form.id.label }}</div>
                 <div class="controls">
-                    {{ form.channel_name|safe }}
-                    {% if form.channel_name.errors %}
+                    {{ form.id|safe }}
+                    {% if form.id.errors %}
+                    <ul class="errors">
+                        {% for error in form.id.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="control-label">{{ form.name.label }}</div>
+                <div class="controls">
+                    {{ form.name|safe }}
+                    {% if form.name.errors %}
                         <ul class="errors">
-                            {% for error in form.channel_name.errors %}
+                            {% for error in form.name.errors %}
                                 <li>{{ error }}</li>
                             {% endfor %}
                         </ul>
@@ -21,22 +34,22 @@
                 </div>
             </div>
             <div class="control-group">
-                <div class="control-label">{{ form.channel_description.label }}</div>
+                <div class="control-label">{{ form.token.label }}</div>
                 <div class="controls">
-                    {{ form.channel_description|safe }}
-                    {% if form.channel_description.errors %}
-                        <ul class="errors">
-                            {% for error in form.channel_description.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
+                    {{ form.token|safe }}
+                    {% if form.token.errors %}
+                    <ul class="errors">
+                        {% for error in form.token.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
                     {% endif %}
                 </div>
             </div>
             <div class="control-group">
                 <div class="controls">
                     <input class="btn btn-primary" type="submit" value="Save Changes"/>
-                    <a class="btn cancel" href="{{ url_for('list_channels') }}">Cancel</a>
+                    <a class="btn cancel" href="{{ url_for('qq.list_channels') }}">Cancel</a>
                 </div>
             </div>
         </fieldset>
