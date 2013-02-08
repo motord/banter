@@ -24,6 +24,20 @@ def parse(message):
      {*
      <PicUrl>![CDATA[{{ message.picUrl }}]]</PicUrl>
      *}
+     {*
+     <Title>![CDATA[{{ message.title }}]]</Title>
+     <Description>![CDATA[{{ message.description }}]]</Description>
+     <Url>![CDATA[{{ message.url }}]]</Url>
+     *}
+     {*
+     <Event>![CDATA[{{ message.location }}]]</Event>
+     <Latitude>{{ message.latitude }}</Latitude>
+     <Longitude>{{ message.longtitude }}</Longitude>
+     <Precision>{{ message.precision }}</Precision>
+     *}
+     {*
+     <MsgId>{{ message.msgId }}</MsgId>
+     *}
      </xml>
     """)
     msg=dict([(k,v) for (k,v) in pattern.scrape(html=re.sub('<(\!\[CDATA\[.*\]\])>', cdatarepl, message))['message'].items() if v])

@@ -17,5 +17,13 @@
             {% endfor %}
         </Articles>
     {% endif %}
+    {% if message.msgType == 'music' %}
+    <Music>
+        <Title><![CDATA[{{ message.title }}]]></Title>
+        <Description><![CDATA[{{ message.description }}]]></Description>
+        <MusicUrl><![CDATA[{{ message.musicUrl }}]]></MusicUrl>
+        <HQMusicUrl><![CDATA[{{ message.hQMusicUrl }}]]></HQMusicUrl>
+    </Music>
+    {% endif %}
     <FuncFlag>{{ message.funcFlag }}</FuncFlag>
 </xml>

@@ -12,6 +12,8 @@ from decorators import cached, invalidate_cache
 MSG_TYPE_TEXT = u'text'
 MSG_TYPE_LOCATION = u'location'
 MSG_TYPE_IMAGE = u'image'
+MSG_TYPE_LINK = u'link'
+MSG_TYPE_EVENT = u'event'
 
 def import_module(channel, bot):
         # Has this module already been loaded? If so, move on
@@ -68,7 +70,9 @@ def chant(remark):
         module=LoadBot(channel, bot)
         retort = {MSG_TYPE_TEXT: module.process_text,
                   MSG_TYPE_IMAGE: module.process_image,
-                  MSG_TYPE_LOCATION: module.process_location}[remark['msgType']](remark, retort)
+                  MSG_TYPE_LOCATION: module.process_location,
+                  MSG_TYPE_LINK: module.process_link,
+                  MSG_TYPE_EVENT: module.process_event}[remark['msgType']](remark, retort)
     retort['message']=render_template('message.xml', message=retort)
     logging.info(retort['message'])
     return retort

@@ -6,6 +6,8 @@ import logging
 MSG_TYPE_TEXT = u'text'
 MSG_TYPE_LOCATION = u'location'
 MSG_TYPE_IMAGE = u'image'
+MSG_TYPE_LINK = u'link'
+MSG_TYPE_EVENT = u'event'
 
 def process_text(remark, retort):
     if remark['content']:
