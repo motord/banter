@@ -1,0 +1,4 @@
+cron:
+- description:
+  url: /heartbeat
+  schedule: every 4 minutes

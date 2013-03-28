@@ -55,6 +55,14 @@ def process_link(remark, retort):
     return retort
 
 def process_event(remark, retort):
+    if remark['event']=='subscribe':
+        retort['content']='Subscribed!'
+    if remark['event']=='unsubscribe':
+        retort['content']='Unsubscribed!'
+    if remark['event']=='CLICK':
+        retort['content']=remark['eventkey']+' clicked!'
+    retort['msgType']=MSG_TYPE_TEXT
+    retort['funcFlag']=0
     return retort
 </div>
 {% endblock content %}

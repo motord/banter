@@ -20,7 +20,8 @@ def parse(message):
      <Location_X>{{ message.locationX }}</Location_X>
      <Location_Y>{{ message.localtionY }}</Location_Y>
      <Scale>20</Scale>
-     <Label>![CDATA[{{ message.label }}]]</Label>*}
+     <Label>![CDATA[{{ message.label }}]]</Label>
+     *}
      {*
      <PicUrl>![CDATA[{{ message.picUrl }}]]</PicUrl>
      *}
@@ -30,10 +31,8 @@ def parse(message):
      <Url>![CDATA[{{ message.url }}]]</Url>
      *}
      {*
-     <Event>![CDATA[{{ message.location }}]]</Event>
-     <Latitude>{{ message.latitude }}</Latitude>
-     <Longitude>{{ message.longtitude }}</Longitude>
-     <Precision>{{ message.precision }}</Precision>
+     <Event>![CDATA[{{ message.event }}]]</Event>
+     <EventKey>![CDATA[{{ message.eventkey }}]]</EventKey>
      *}
      {*
      <MsgId>{{ message.msgId }}</MsgId>

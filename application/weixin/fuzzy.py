@@ -1,6 +1,6 @@
 __author__ = 'peter'
 
-from application.hashes.simhash import simhash
+from hashes.simhash import simhash
 from google.appengine.api import memcache
 
 def decide(forktionary, message):

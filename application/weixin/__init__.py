@@ -169,3 +169,7 @@ def list_bots(channel):
     """List channel bots"""
     bots = Bot.query(Bot.channel==channel.key)
     return render_template('list_bots.html', channel=channel, bots = bots)
+
+@qq.route('/heartbeat', methods=['GET'])
+def heartbeat():
+    return 'OK'
