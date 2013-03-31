@@ -17,22 +17,23 @@ MSG_TYPE_EVENT = u'event'
 
 def import_module(channel, bot):
         # Has this module already been loaded? If so, move on
+        bot_key=bot.key.urlsafe()
         for mod in sys.modules.keys():
-            if mod == bot.name:
+            if mod == bot_key:
                 # module found
-                logging.info('Module already loaded ({0})'.format(bot.name))
+                logging.info('Module already loaded ({0}.{1})'.format(channel.id, bot.name))
                 return sys.modules[mod]
         bot_name=bot.name.encode('utf-8')
         channel_id=channel.id.encode('utf-8')
-        module = sys.modules[bot_name] = type(sys)(bot_name)
+        module = sys.modules[bot_key] = type(sys)(bot_key)
         module.__dict__['__file__'] = '.'.join([channel_id, bot_name])
         bot_code=compile(bot.code, filename='.'.join([channel_id, bot_name]), mode='exec')
         try:
             exec bot_code in module.__dict__
         except:
             # Module failed to load? Unload it?
-            logging.info('execute {0} error'.format(bot.name))
-            del sys.modules[bot.name]
+            logging.info('execute {0}.{1} error'.format(channel.id, bot.name))
+            del sys.modules[bot_key]
         return module
 
 @invalidate_cache
