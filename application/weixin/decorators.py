@@ -1,7 +1,7 @@
 __author__ = 'peter'
 
 from flask import request, redirect, render_template, url_for
-from models import Channel, Message, Bot
+from models import Channel, Message, Bot, History, Context
 from hashlib import sha1
 from functools import wraps
 import time
@@ -20,7 +20,7 @@ def signature_verified(func):
         channel=kwargs['channel']
         q=Channel.gql("WHERE id = :1", channel)
         c=q.get()
-        if q:
+        if c:
             kwargs['channel']=c
             token=c.token
             if sha1(''.join(sorted([token, timestamp, nonce]))).hexdigest()==signature:
@@ -77,7 +77,8 @@ def cached(timeout=300):
                 logging.info('cache hit: {0}'.format(key))
                 return parrot(retort, remark)
             retort = f(*args, **kwargs)
-            memcache.set(key, retort, time=timeout)
+            if not kwargs['history']:
+                memcache.set(key, retort, time=timeout)
             return retort
         return decorated_function
     return decorator
@@ -88,3 +89,31 @@ def invalidate_cache(func):
         memcache.flush_all()
         return func(*args, **kwargs)
     return decorated_function
+
+def history_aware(func):
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        remark=kwargs['remark']
+        channel=remark['channel']
+        user=remark['fromUser']
+        q=History.gql("WHERE channel = :1 AND user = :2", channel, user)
+        h=q.get()
+        if not h:
+            h=History(channel=channel, user=user).put()
+        kwargs['history']=h
+        return func(*args, **kwargs)
+    return decorated_view
+
+def context_aware(func):
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        remark=kwargs['remark']
+        channel=remark['channel']
+        user=remark['fromUser']
+        q=Context.gql("WHERE channel = :1 AND user = :2", channel, user)
+        c=q.get()
+        if not c:
+            c=Context(channel=channel, user=user).put()
+        kwargs['context']=c
+        return func(*args, **kwargs)
+    return decorated_view

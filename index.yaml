@@ -22,3 +22,13 @@ indexes:
   - name: to_user
   - name: message_type
   - name: create_time
+
+- kind: History
+  properties:
+  - name: channel
+  - name: user
+
+- kind: Context
+  properties:
+  - name: channel
+  - name: user

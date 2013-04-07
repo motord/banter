@@ -29,6 +29,7 @@
 {% block content %}
 <div id="editor">
 import logging
+from application.weixin.decorators import history_aware, context_aware
 
 MSG_TYPE_TEXT = u'text'
 MSG_TYPE_ARTICLE = u'news'
@@ -38,23 +39,24 @@ MSG_TYPE_LINK = u'link'
 MSG_TYPE_EVENT = u'event'
 MSG_TYPE_MUSIC = u'music'
 
-def process_text(remark, retort):
+@history_aware
+def process_text(remark, retort, **kwargs):
     if remark['content']:
         retort['content']='Bot Spawned!'
     retort['msgType']=MSG_TYPE_TEXT
     retort['funcFlag']=0
     return retort
 
-def process_location(remark, retort):
+def process_location(remark, retort, **kwargs):
     return retort
 
-def process_image(remark, retort):
+def process_image(remark, retort, **kwargs):
     return retort
 
-def process_link(remark, retort):
+def process_link(remark, retort, **kwargs):
     return retort
 
-def process_event(remark, retort):
+def process_event(remark, retort, **kwargs):
     if remark['event']=='subscribe':
         retort['content']='Subscribed!'
     if remark['event']=='unsubscribe':

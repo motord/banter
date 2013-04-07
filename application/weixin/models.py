@@ -29,3 +29,16 @@ class Message(ndb.Model):
     message=ndb.TextProperty(required=True)
     created = ndb.DateTimeProperty(auto_now_add=True)
     modified = ndb.DateTimeProperty(auto_now=True)
+
+class History(ndb.Model):
+    channel = ndb.KeyProperty(Channel)
+    user = ndb.StringProperty(required=True)
+    to_user = ndb.StringProperty(required=True)
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    modified = ndb.DateTimeProperty(auto_now=True)
+
+class Context(ndb.Model):
+    channel = ndb.KeyProperty(Channel)
+    user = ndb.StringProperty(required=True)
+    created = ndb.DateTimeProperty(auto_now_add=True)
+    modified = ndb.DateTimeProperty(auto_now=True)
