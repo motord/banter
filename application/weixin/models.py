@@ -33,12 +33,13 @@ class Message(ndb.Model):
 class History(ndb.Model):
     channel = ndb.KeyProperty(Channel)
     user = ndb.StringProperty(required=True)
-    to_user = ndb.StringProperty(required=True)
+    content = ndb.JsonProperty()
     created = ndb.DateTimeProperty(auto_now_add=True)
     modified = ndb.DateTimeProperty(auto_now=True)
 
 class Context(ndb.Model):
     channel = ndb.KeyProperty(Channel)
     user = ndb.StringProperty(required=True)
+    content = ndb.JsonProperty()
     created = ndb.DateTimeProperty(auto_now_add=True)
     modified = ndb.DateTimeProperty(auto_now=True)
