@@ -51,9 +51,9 @@ def ReloadBot(channel, bot):
 
 @invalidate_cache
 def UnloadBot(channel, bot):
-    if sys.modules.has_key(bot.name):
+    if sys.modules.has_key(bot.key.urlsafe()):
         logging.info('Remove Bot ({0})'.format(bot.name))
-        del sys.modules[bot.name]
+        del sys.modules[bot.key.urlsafe()]
 
 @invalidate_cache
 def ReloadAllBots(channel, bot):

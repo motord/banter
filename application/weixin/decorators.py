@@ -71,14 +71,27 @@ def cached(timeout=300):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             remark=args[0]
+            channel=remark['channel']
+            user=remark['fromUser']
+            history_key='{0}::{1}'.format(channel.key.urlsafe(), user)
+            hk=memcache.get(history_key)
+            h=None
+            if not hk:
+                q=History.gql("WHERE channel = :1 AND user = :2", channel.key, user)
+                h=q.get()
+                if h:
+                    hk=h.key
+                    memcache.set(history_key, hk, time=timeout)
             key = cache_key(remark)
-            retort = memcache.get(key)
-            if retort:
-                logging.info('cache hit: {0}'.format(key))
-                return parrot(retort, remark)
+            if not hk:
+                retort = memcache.get(key)
+                if retort:
+                    logging.info('cache hit: {0}'.format(key))
+                    return parrot(retort, remark)
+            else:
+                logging.info('history disables cache')
             retort = f(*args, **kwargs)
-            if not kwargs['history']:
-                memcache.set(key, retort, time=timeout)
+            memcache.set(key, retort, time=timeout)
             return retort
         return decorated_function
     return decorator
@@ -92,28 +105,35 @@ def invalidate_cache(func):
 
 def history_aware(func):
     @wraps(func)
-    def decorated_view(*args, **kwargs):
-        remark=kwargs['remark']
+    def decorated(remark, retort, **kwargs):
         channel=remark['channel']
         user=remark['fromUser']
-        q=History.gql("WHERE channel = :1 AND user = :2", channel, user)
-        h=q.get()
+        history_key='{0}::{1}'.format(channel.key.urlsafe(), user)
+        hk=memcache.get(history_key)
+        h=None
+        if not hk:
+            q=History.gql("WHERE channel = :1 AND user = :2", channel.key, user)
+            h=q.get()
         if not h:
-            h=History(channel=channel, user=user).put()
+            h=History(channel=channel.key, user=user)
+            hk=h.put()
+        else:
+            hk=h.key
+        memcache.set(history_key, hk, time=300)
         kwargs['history']=h
-        return func(*args, **kwargs)
-    return decorated_view
+        return func(remark, retort, **kwargs)
+    return decorated
 
 def context_aware(func):
     @wraps(func)
-    def decorated_view(*args, **kwargs):
-        remark=kwargs['remark']
+    def decorated(remark, retort, **kwargs):
         channel=remark['channel']
         user=remark['fromUser']
-        q=Context.gql("WHERE channel = :1 AND user = :2", channel, user)
+        q=Context.gql("WHERE channel = :1 AND user = :2", channel.key, user)
         c=q.get()
         if not c:
-            c=Context(channel=channel, user=user).put()
+            c=Context(channel=channel.key, user=user)
+            c.put()
         kwargs['context']=c
-        return func(*args, **kwargs)
-    return decorated_view
+        return func(remark, retort, **kwargs)
+    return decorated
