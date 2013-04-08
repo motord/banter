@@ -10,6 +10,14 @@ import logging
 
 from google.appengine.api import memcache
 
+MSG_TYPE_TEXT = u'text'
+MSG_TYPE_ARTICLE = u'news'
+MSG_TYPE_LOCATION = u'location'
+MSG_TYPE_IMAGE = u'image'
+MSG_TYPE_LINK = u'link'
+MSG_TYPE_EVENT = u'event'
+MSG_TYPE_MUSIC = u'music'
+
 def signature_verified(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
@@ -63,7 +71,6 @@ def parrot(retort, remark):
     retort['toUser']=remark['fromUser']
     retort['fromUser']=remark['toUser']
     retort['createTime']=int(time.time())
-    retort['message']=render_template('message.xml', message=retort)
     return retort
 
 def cached(timeout=300):
@@ -71,25 +78,11 @@ def cached(timeout=300):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             remark=args[0]
-            channel=remark['channel']
-            user=remark['fromUser']
-            history_key='{0}::{1}'.format(channel.key.urlsafe(), user)
-            hk=memcache.get(history_key)
-            h=None
-            if not hk:
-                q=History.gql("WHERE channel = :1 AND user = :2", channel.key, user)
-                h=q.get()
-                if h:
-                    hk=h.key
-                    memcache.set(history_key, hk, time=timeout)
             key = cache_key(remark)
-            if not hk:
-                retort = memcache.get(key)
-                if retort:
-                    logging.info('cache hit: {0}'.format(key))
-                    return parrot(retort, remark)
-            else:
-                logging.info('history disables cache')
+            retort = memcache.get(key)
+            if retort:
+                logging.info('cache hit: {0}'.format(key))
+                return parrot(retort, remark)
             retort = f(*args, **kwargs)
             memcache.set(key, retort, time=timeout)
             return retort
@@ -119,7 +112,7 @@ def history_aware(func):
             hk=h.put()
         else:
             hk=h.key
-        memcache.set(history_key, hk, time=300)
+        memcache.set(history_key, hk)
         kwargs['history']=h
         return func(remark, retort, **kwargs)
     return decorated
@@ -136,4 +129,24 @@ def context_aware(func):
             c.put()
         kwargs['context']=c
         return func(remark, retort, **kwargs)
+    return decorated
+
+def paragraphical(func):
+    @wraps(func)
+    def decorated(remark, retort, **kwargs):
+        articles=func(remark, retort, **kwargs)
+        retort['articles']=articles
+        retort['articleCount']=len(articles)
+        retort['msgType']=MSG_TYPE_ARTICLE
+        retort['funcFlag']=0
+        return retort
+    return decorated
+
+def musical(func):
+    @wraps(func)
+    def decorated(remark, retort, **kwargs):
+        retort=func(remark, retort, **kwargs)
+        retort['msgType']=MSG_TYPE_MUSIC
+        retort['funcFlag']=0
+        return retort
     return decorated

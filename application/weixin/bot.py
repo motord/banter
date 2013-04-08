@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-__author__ = 'peter'
-
 import logging
-from application.weixin.decorators import history_aware, context_aware
+from application.weixin.decorators import cached, history_aware, context_aware, paragraphical, musical
 from application.weixin.fuzzy import decide
 
 MSG_TYPE_TEXT = u'text'
@@ -13,21 +10,55 @@ MSG_TYPE_LINK = u'link'
 MSG_TYPE_EVENT = u'event'
 MSG_TYPE_MUSIC = u'music'
 
-def subscription(**kwargs):
+@cached()
+@paragraphical
+def subscription(remark, retort, **kwargs):
     article={'title':u'欢迎关注方鸿渐和唐晓芙的微信公众号！', 'url':'http://qrcache.com', 'description':u"""我们的婚礼定于2013年4月1日（星期日）于上海市徐家汇圣依纳爵主教座堂举行，真诚邀请各位亲朋好友参加！
 
 关注我们的微信号，可以：
 1）及时收到动态提醒——会于婚礼/答谢宴前及时推送提醒给大家，也会发布现场情况
-2）查询婚礼/答谢宴的地址及时间——回复“查询”
+2）查询婚礼的地址及时间——回复“查询”
 3）查看我们的结婚照——回复“照片”。如需查看单人照，回复“方鸿渐”(或“新郎”)或“唐晓芙(或“新娘”)”
 4）查询婚礼日程——回复“日程”
 5）了解我们的恋爱史——回复“八卦”
-6）无聊调戏我们一下——随便问问题试试，比如“家里谁说了算”？，不定期回复哦
+6）听一下我们的OST，回复“音乐”
+7）无聊调戏我们一下——随便问问题试试，比如“家里谁说了算”？，不定期回复哦
 
 如想再次看到本帮助消息，请回复“帮助”。"""}
     return [article]
 
-def photos(**kwargs):
+@musical
+@history_aware
+def music(remark, retort, **kwargs):
+    songs=[{'title': 'Come Away With Me', 'artist': 'Norah Jones', 'mp3': 'http://wedbliss.b0.upaiyun.com/ComeAwayWithMeNorahJones.mp3'},
+           {'title': 'Marry Me', 'artist': 'Train', 'mp3': 'http://wedbliss.b0.upaiyun.com/MarryMeTrain.mp3'}]
+    history=kwargs['history']
+    newsongs=songs
+    if history.content:
+        try:
+            newsongs=[song for song in songs if song not in history.content['music']]
+        except KeyError:
+            pass
+    else:
+        history.content={'photos':[], 'bride':[], 'groom':[], 'music':[]}
+    if len(newsongs)==0:
+        retort['title']=songs[0]['artist']
+        retort['description']=songs[0]['title']
+        retort['musicUrl']=songs[0]['mp3']
+        retort['hQMusicUrl']=songs[0]['mp3']
+        history.content['music']=[songs[0]]
+    else:
+        retort['title']=newsongs[0]['artist']
+        retort['description']=newsongs[0]['title']
+        retort['musicUrl']=newsongs[0]['mp3']
+        retort['hQMusicUrl']=newsongs[0]['mp3']
+        history.content['music'].append(newsongs[0])
+    history.put()
+    return retort
+
+@paragraphical
+@history_aware
+def photos(remark, retort, **kwargs):
     pics=['http://pic.yupoo.com/qrcache/CLM3rdrK/medish.jpg', 'http://pic.yupoo.com/qrcache/CLM3qg0x/medish.jpg', 'http://pic.yupoo.com/qrcache/CLNkDZb0/medish.jpg']
     history=kwargs['history']
     newpics=pics
@@ -37,7 +68,7 @@ def photos(**kwargs):
         except KeyError:
             pass
     else:
-        history.content={'photos':[], 'bride':[], 'groom':[]}
+        history.content={'photos':[], 'bride':[], 'groom':[], 'music':[]}
     if len(newpics)==0:
         article={'title':u'您已看过我们所有的照片，再看一次？', 'picUrl':pics[0]}
         history.content['photos']=[pics[0]]
@@ -47,15 +78,21 @@ def photos(**kwargs):
     history.put()
     return [article]
 
-def schedule(**kwargs):
+@cached()
+@paragraphical
+def schedule(remark, retort, **kwargs):
     article={'title':u'我们的婚礼', 'description':u'定于2013年4月1日（星期日）于上海市徐家汇圣依纳爵主教座堂举行，真诚邀请各位亲朋好友参加！'}
     return [article]
 
-def gossip(**kwargs):
+@cached()
+@paragraphical
+def gossip(remark, retort, **kwargs):
     article={'title':u'我们的婚礼', 'description':u'定于2013年4月1日（星期日）于上海市徐家汇圣依纳爵主教座堂举行，真诚邀请各位亲朋好友参加！'}
     return [article]
 
-def bride(**kwargs):
+@paragraphical
+@history_aware
+def bride(remark, retort, **kwargs):
     pics=['http://pic.yupoo.com/qrcache/CLM3qg0x/medish.jpg', 'http://pic.yupoo.com/qrcache/CLNkDZb0/medish.jpg']
     history=kwargs['history']
     newpics=pics
@@ -65,7 +102,7 @@ def bride(**kwargs):
         except KeyError:
             pass
     else:
-        history.content={'photos':[], 'bride':[], 'groom':[]}
+        history.content={'photos':[], 'bride':[], 'groom':[], 'music':[]}
     if len(newpics)==0:
         article={'title':u'您已看过新娘唐晓芙所有的照片，再看一次？', 'picUrl':pics[0]}
         history.content['bride']=[pics[0]]
@@ -75,7 +112,9 @@ def bride(**kwargs):
     history.put()
     return [article]
 
-def groom(**kwargs):
+@paragraphical
+@history_aware
+def groom(remark, retort, **kwargs):
     pics=['http://pic.yupoo.com/qrcache/CLMzfJBi/medish.jpg']
     history=kwargs['history']
     newpics=pics
@@ -85,7 +124,7 @@ def groom(**kwargs):
         except KeyError:
             pass
     else:
-        history.content={'photos':[], 'bride':[], 'groom':[]}
+        history.content={'photos':[], 'bride':[], 'groom':[], 'music':[]}
     if len(newpics)==0:
         article={'title':u'您已看过新郎方鸿渐所有的照片，再看一次？', 'picUrl':pics[0]}
         history.content['groom']=[pics[0]]
@@ -95,13 +134,8 @@ def groom(**kwargs):
     history.put()
     return [article]
 
-@history_aware
 def process_text(remark, retort, **kwargs):
-    articles=decide({u'帮助':subscription, u'照片':photos, u'日程':schedule, u'八卦':gossip, u'唐晓芙':bride, u'方鸿渐':groom, u'新娘':bride, u'新郎':groom}, remark['content'])(history=kwargs['history'])
-    retort['articles']=articles
-    retort['articleCount']=len(articles)
-    retort['msgType']=MSG_TYPE_ARTICLE
-    retort['funcFlag']=0
+    retort=decide({u'帮助':subscription, u'照片':photos, u'日程':schedule, u'八卦':gossip, u'唐晓芙':bride, u'方鸿渐':groom, u'新娘':bride, u'新郎':groom, u'音乐':music}, remark['content'])(remark, retort)
     return retort
 
 def process_location(remark, retort, **kwargs):

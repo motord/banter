@@ -62,7 +62,6 @@ def ReloadAllBots(channel, bot):
     for bot in q:
         ReloadBot(channel, bot)
 
-@cached()
 def chant(remark):
     retort={'toUser':remark['fromUser'], 'fromUser':remark['toUser'], 'createTime':int(time.time())}
     channel=remark['channel']
