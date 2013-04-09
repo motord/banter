@@ -59,7 +59,9 @@ def music(remark, retort, **kwargs):
 @paragraphical
 @history_aware
 def photos(remark, retort, **kwargs):
-    pics=['http://pic.yupoo.com/qrcache/CLM3rdrK/medish.jpg', 'http://pic.yupoo.com/qrcache/CLM3qg0x/medish.jpg', 'http://pic.yupoo.com/qrcache/CLNkDZb0/medish.jpg']
+#    pics=['http://pic.yupoo.com/qrcache/CLM3rdrK/medish.jpg', 'http://pic.yupoo.com/qrcache/CLM3qg0x/medish.jpg', 'http://pic.yupoo.com/qrcache/CLNkDZb0/medish.jpg']
+#    teddy
+    pics=['http://pic.yupoo.com/qrcache/CLZw20O2/small.jpg', 'http://pic.yupoo.com/qrcache/CLZwo5ID/small.jpg', 'http://pic.yupoo.com/qrcache/CLZwnxuK/small.jpg']
     history=kwargs['history']
     newpics=pics
     if history.content:
@@ -93,7 +95,9 @@ def gossip(remark, retort, **kwargs):
 @paragraphical
 @history_aware
 def bride(remark, retort, **kwargs):
-    pics=['http://pic.yupoo.com/qrcache/CLM3qg0x/medish.jpg', 'http://pic.yupoo.com/qrcache/CLNkDZb0/medish.jpg']
+#    pics=['http://pic.yupoo.com/qrcache/CLM3qg0x/medish.jpg', 'http://pic.yupoo.com/qrcache/CLNkDZb0/medish.jpg']
+#    teddy
+    pics=['http://pic.yupoo.com/qrcache/CLZwpNda/small.jpg', 'http://pic.yupoo.com/qrcache/CLZyZ7wn/medish.jpg']
     history=kwargs['history']
     newpics=pics
     if history.content:
@@ -115,7 +119,9 @@ def bride(remark, retort, **kwargs):
 @paragraphical
 @history_aware
 def groom(remark, retort, **kwargs):
-    pics=['http://pic.yupoo.com/qrcache/CLMzfJBi/medish.jpg']
+#    pics=['http://pic.yupoo.com/qrcache/CLMzfJBi/medish.jpg']
+#    teddy
+    pics=['http://pic.yupoo.com/qrcache/CLZwqrkc/medish.jpg', 'http://pic.yupoo.com/qrcache/CLZw31RG/medish.jpg']
     history=kwargs['history']
     newpics=pics
     if history.content:
@@ -149,10 +155,8 @@ def process_link(remark, retort, **kwargs):
 
 def process_event(remark, retort, **kwargs):
     if remark['event']=='subscribe':
-        articles=subscription()
-        retort['articles']=articles
-        retort['articleCount']=len(articles)
-        retort['msgType']=MSG_TYPE_ARTICLE
+        retort=subscription(remark, retort)
+        return retort
     if remark['event']=='unsubscribe':
         retort['content']='Unsubscribed!'
         retort['msgType']=MSG_TYPE_TEXT
