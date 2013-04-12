@@ -13,7 +13,7 @@ MSG_TYPE_MUSIC = u'music'
 @cached()
 @paragraphical
 def subscription(remark, retort, **kwargs):
-    article={'title':u'欢迎关注方鸿渐和唐晓芙的微信公众号！', 'url':'http://qrcache.com', 'description':u"""我们的婚礼定于2013年4月1日（星期日）于上海市徐家汇圣依纳爵主教座堂举行，真诚邀请各位亲朋好友参加！
+    article={'title':u'欢迎关注方鸿渐和唐晓芙的微信公众号！', 'url':'http://qrcache.com/apps/wedbliss', 'description':u"""我们的婚礼定于2013年4月1日（星期日）于上海市徐家汇圣依纳爵主教座堂举行，真诚邀请各位亲朋好友参加！
 
 关注我们的微信号，可以：
 1）及时收到动态提醒——会于婚礼/答谢宴前及时推送提醒给大家，也会发布现场情况
@@ -61,7 +61,7 @@ def music(remark, retort, **kwargs):
 def photos(remark, retort, **kwargs):
 #    pics=['http://pic.yupoo.com/qrcache/CLM3rdrK/medish.jpg', 'http://pic.yupoo.com/qrcache/CLM3qg0x/medish.jpg', 'http://pic.yupoo.com/qrcache/CLNkDZb0/medish.jpg']
 #    teddy
-    pics=['http://pic.yupoo.com/qrcache/CLZw20O2/small.jpg', 'http://pic.yupoo.com/qrcache/CLZwo5ID/small.jpg', 'http://pic.yupoo.com/qrcache/CLZwnxuK/small.jpg']
+    pics=[{'picurl':'http://pic.yupoo.com/qrcache/CM04jJfY/medish.jpg', 'url':'http://pic.yupoo.com/qrcache/CMxgZ5Nm/medium.jpg'}, {'picurl':'http://pic.yupoo.com/qrcache/CM04HbgE/medish.jpg', 'url':'http://pic.yupoo.com/qrcache/CMxgXult/medish.jpg'}, {'picurl':'http://pic.yupoo.com/qrcache/CM04Hxxv/medish.jpg', 'url':'http://pic.yupoo.com/qrcache/CMxgXRaN/medish.jpg'}]
     history=kwargs['history']
     newpics=pics
     if history.content:
@@ -72,10 +72,10 @@ def photos(remark, retort, **kwargs):
     else:
         history.content={'photos':[], 'bride':[], 'groom':[], 'music':[]}
     if len(newpics)==0:
-        article={'title':u'您已看过我们所有的照片，再看一次？', 'picUrl':pics[0]}
+        article={'title':u'您已看过我们所有的照片，再看一次？', 'picUrl':pics[0]['picurl'], 'url':pics[0]['url']}
         history.content['photos']=[pics[0]]
     else:
-        article={'picUrl':newpics[0]}
+        article={'picUrl':newpics[0]['picurl'], 'url':newpics[0]['url']}
         history.content['photos'].append(newpics[0])
     history.put()
     return [article]
@@ -97,7 +97,7 @@ def gossip(remark, retort, **kwargs):
 def bride(remark, retort, **kwargs):
 #    pics=['http://pic.yupoo.com/qrcache/CLM3qg0x/medish.jpg', 'http://pic.yupoo.com/qrcache/CLNkDZb0/medish.jpg']
 #    teddy
-    pics=['http://pic.yupoo.com/qrcache/CLZwpNda/small.jpg', 'http://pic.yupoo.com/qrcache/CLZyZ7wn/medish.jpg']
+    pics=[{'picurl':'http://pic.yupoo.com/qrcache/CM04Iob3/medish.jpg', 'url':'http://pic.yupoo.com/qrcache/CMxgYW8A/medium.jpg'}, {'picurl':'http://pic.yupoo.com/qrcache/CM04IDXc/medish.jpg', 'url':'http://pic.yupoo.com/qrcache/CMxgZhvI/medium.jpg'}, {'picurl':'http://pic.yupoo.com/qrcache/CM04JnOl/medish.jpg', 'url':'http://pic.yupoo.com/qrcache/CMxgXEfG/medium.jpg'}]
     history=kwargs['history']
     newpics=pics
     if history.content:
@@ -108,10 +108,10 @@ def bride(remark, retort, **kwargs):
     else:
         history.content={'photos':[], 'bride':[], 'groom':[], 'music':[]}
     if len(newpics)==0:
-        article={'title':u'您已看过新娘唐晓芙所有的照片，再看一次？', 'picUrl':pics[0]}
+        article={'title':u'您已看过新娘唐晓芙所有的照片，再看一次？', 'picUrl':pics[0]['picurl'], 'url':pics[0]['url']}
         history.content['bride']=[pics[0]]
     else:
-        article={'picUrl':newpics[0]}
+        article={'picUrl':newpics[0]['picurl'], 'url':newpics[0]['url']}
         history.content['bride'].append(newpics[0])
     history.put()
     return [article]
@@ -121,7 +121,7 @@ def bride(remark, retort, **kwargs):
 def groom(remark, retort, **kwargs):
 #    pics=['http://pic.yupoo.com/qrcache/CLMzfJBi/medish.jpg']
 #    teddy
-    pics=['http://pic.yupoo.com/qrcache/CLZwqrkc/medish.jpg', 'http://pic.yupoo.com/qrcache/CLZw31RG/medish.jpg']
+    pics=[{'picurl':'http://pic.yupoo.com/qrcache/CM04JGvM/medish.jpg', 'url':'http://pic.yupoo.com/qrcache/CMxgZdR5/medish.jpg'}, {'picurl':'http://pic.yupoo.com/qrcache/CM04kYKA/medish.jpg', 'url':'http://pic.yupoo.com/qrcache/CMxgXjNk/medium.jpg'}]
     history=kwargs['history']
     newpics=pics
     if history.content:
@@ -132,10 +132,10 @@ def groom(remark, retort, **kwargs):
     else:
         history.content={'photos':[], 'bride':[], 'groom':[], 'music':[]}
     if len(newpics)==0:
-        article={'title':u'您已看过新郎方鸿渐所有的照片，再看一次？', 'picUrl':pics[0]}
+        article={'title':u'您已看过新郎方鸿渐所有的照片，再看一次？', 'picUrl':pics[0]['picurl'], 'url':pics[0]['url']}
         history.content['groom']=[pics[0]]
     else:
-        article={'picUrl':newpics[0]}
+        article={'picUrl':newpics[0]['picurl'], 'url':newpics[0]['url']}
         history.content['groom'].append(newpics[0])
     history.put()
     return [article]
