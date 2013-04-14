@@ -30,7 +30,7 @@ class Message(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add=True)
     modified = ndb.DateTimeProperty(auto_now=True)
 
-class History(ndb.Model):
+class Session(ndb.Model):
     channel = ndb.KeyProperty(Channel)
     user = ndb.StringProperty(required=True)
     content = ndb.JsonProperty()

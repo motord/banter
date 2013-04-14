@@ -23,7 +23,7 @@ indexes:
   - name: message_type
   - name: create_time
 
-- kind: History
+- kind: Session
   properties:
   - name: channel
   - name: user

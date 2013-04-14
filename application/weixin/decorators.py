@@ -1,7 +1,7 @@
 __author__ = 'peter'
 
 from flask import request, redirect, render_template, url_for
-from models import Channel, Message, Bot, History, Context
+from models import Channel, Message, Bot, Session, Context
 from hashlib import sha1
 from functools import wraps
 import time
@@ -96,23 +96,23 @@ def invalidate_cache(func):
         return func(*args, **kwargs)
     return decorated_function
 
-def history_aware(func):
+def session(func):
     @wraps(func)
     def decorated(remark, retort, **kwargs):
         channel=remark['channel']
         user=remark['fromUser']
-        history_key='{0}::{1}'.format(channel.key.urlsafe(), user)
-        hk=memcache.get(history_key)
+        session_key='{0}::{1}'.format(channel.key.urlsafe(), user)
+        hk=memcache.get(session_key)
         h=None
         if not hk:
-            q=History.gql("WHERE channel = :1 AND user = :2", channel.key, user)
+            q=Session.gql("WHERE channel = :1 AND user = :2", channel.key, user)
             h=q.get()
         if not h:
-            h=History(channel=channel.key, user=user)
+            h=Session(channel=channel.key, user=user)
             hk=h.put()
         else:
             hk=h.key
-        memcache.set(history_key, hk)
+        memcache.set(session_key, hk)
         kwargs['history']=h
         return func(remark, retort, **kwargs)
     return decorated

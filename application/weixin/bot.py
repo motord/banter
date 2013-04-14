@@ -1,5 +1,5 @@
 import logging
-from application.weixin.decorators import cached, history_aware, context_aware, paragraphical, musical
+from application.weixin.decorators import cached, session, context_aware, paragraphical, musical
 from application.weixin.fuzzy import decide
 
 MSG_TYPE_TEXT = u'text'
@@ -28,7 +28,7 @@ def subscription(remark, retort, **kwargs):
     return [article]
 
 @musical
-@history_aware
+@session
 def music(remark, retort, **kwargs):
     songs=[{'title': 'Come Away With Me', 'artist': 'Norah Jones', 'mp3': 'http://wedbliss.b0.upaiyun.com/ComeAwayWithMeNorahJones.mp3'},
            {'title': 'Marry Me', 'artist': 'Train', 'mp3': 'http://wedbliss.b0.upaiyun.com/MarryMeTrain.mp3'}]
@@ -57,7 +57,7 @@ def music(remark, retort, **kwargs):
     return retort
 
 @paragraphical
-@history_aware
+@session
 def photos(remark, retort, **kwargs):
 #    pics=['http://pic.yupoo.com/qrcache/CLM3rdrK/medish.jpg', 'http://pic.yupoo.com/qrcache/CLM3qg0x/medish.jpg', 'http://pic.yupoo.com/qrcache/CLNkDZb0/medish.jpg']
 #    teddy
@@ -93,7 +93,7 @@ def gossip(remark, retort, **kwargs):
     return [article]
 
 @paragraphical
-@history_aware
+@session
 def bride(remark, retort, **kwargs):
 #    pics=['http://pic.yupoo.com/qrcache/CLM3qg0x/medish.jpg', 'http://pic.yupoo.com/qrcache/CLNkDZb0/medish.jpg']
 #    teddy
@@ -117,7 +117,7 @@ def bride(remark, retort, **kwargs):
     return [article]
 
 @paragraphical
-@history_aware
+@session
 def groom(remark, retort, **kwargs):
 #    pics=['http://pic.yupoo.com/qrcache/CLMzfJBi/medish.jpg']
 #    teddy
